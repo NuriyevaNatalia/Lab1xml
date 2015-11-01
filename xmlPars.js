@@ -186,4 +186,17 @@ function changeType()
     }
 }
 function saveParam()
-{}
+{
+	var form = document.getElementById("NewParameter")
+    var element = new Object();
+    element.id = document.getElementById("NewId").value;
+    element.name = document.getElementById("NewName").value;
+    element.description = document.getElementById("NewDescription").value;
+    element.type = getTypeFromCombobox();
+    element.value = getNewValue(element.type);
+	
+    if (checkData(element))
+    return;
+    printParam(element);
+	cancelParam();
+}
