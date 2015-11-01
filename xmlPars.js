@@ -1,4 +1,4 @@
-var file_xml;
+var xmlFile;
 
 window.onload = function ()
 {
@@ -7,10 +7,10 @@ window.onload = function ()
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", "Input.xml", false);
     xmlhttp.send();
-    file_xml = xmlhttp.responseXML;
-    if (file_xml)
+    xmlFile = xmlhttp.responseXML;
+    if (xmlFile)
     {
-        xmlParser(file_xml);
+        xmlParser(xmlFile);
     }
 }
 
@@ -25,14 +25,32 @@ function printParam(element)
     html_element.setAttribute("value", element.value);
     document.getElementById("Content").appendChild(html_element);
     var form_type = getFormValue(element.type, element.value);
-    var print_string = "     ID: ".bold() + element.id + "; Name: ".bold() + element.name
-                            + "; Description: ".bold() + element.description + form_type;
-	print_string += " <li class=\"menu\"><a id=\"DeleteButton\" onclick=\'deleteParam(this.parentNode)\'/>Delete</a></li></br>";						
-    html_element.innerHTML = print_string;
+    var string_to_show = "<a id=\"DeleteButton\" onclick=\'deleteParam(this.parentNode)\'/>Delete</a>";
+    string_to_show += "     Id: ".bold() + element.id + "; Name: ".bold() + element.name
+                            + "; Description: ".bold() + element.description + form_type + "</br>";
+    html_element.innerHTML = string_to_show;
 }
-function xmlParser(file_xml)
+function getFormValue(type, value)
 {
-    var params = file_xml.getElementsByTagName("Parameter");
+    var string_to_return = "; Type: ".bold() + type + "; Value: ".bold();
+    switch (type)
+    {
+        case 'String':
+            if (value === "")
+                return string_to_return + "<input oninput=\'setElementValue(this, this.parentNode, false)\' type=\'text\' />";
+            return string_to_return + "<input oninput=\'setElementValue(this, this.parentNode, false)\' type=\'text\' value=\'" + value + "\' />";
+        case 'Int32':
+            return string_to_return + "<input oninput=\'setElementValue(this, this.parentNode, true)\' type=\'text\' value=" + value + " />";
+        case 'Boolean':
+            var checkbox = "";
+            if (value === "True" )
+                checkbox = "checked";
+            return string_to_return + "<input oninput=\'setElementValue(this, this.parentNode, false)\' type=\'checkbox\'" + checkbox + "/>";
+    }
+}
+function xmlParser(xml_doc)
+{
+    var params = xml_doc.getElementsByTagName("Parameter");
     for (var i = 0; i < params.length; i++)
     {
         var element = new Object();
@@ -45,7 +63,20 @@ function xmlParser(file_xml)
         printParam(element);
     }
 }
-
+function saveParam()
+{
+    var form = document.getElementById("NewParameter")
+    var element = new Object();
+    element.id = document.getElementById("NewId").value;
+    element.name = document.getElementById("NewName").value;
+    element.description = document.getElementById("NewDescription").value;
+    element.type = getTypeFromCombobox();
+    element.value = getNewValue(element.type);
+    if (checkData(element))
+    return;
+    printParam(element);
+    cancelParam();
+}
 function setElementValue(child_node, parent_node, isNumber)
 {
     if (parent_node.getAttribute("type") == "Boolean")
@@ -74,12 +105,20 @@ function deleteParam( child_node )
     child_node.parentNode.removeChild(child_node);
 }
 
+function addParam()
+{
+    document.getElementById("NewParameter").hidden = false;
+    document.getElementById("AddButton").hidden = "hidden";
+    document.getElementById("DownloadButton").hidden = "hidden";
+}
+
 function cancelParam()
 {
     document.getElementById("NewParameter").hidden = "hidden";
     document.getElementById("AddButton").hidden = false;
     document.getElementById("DownloadButton").hidden = false;
 }
+
 function checkData(element)
 {
     var result = false;
@@ -105,11 +144,25 @@ function checkData(element)
     }
     return result;
 }
-function addParam()
+function changeType()
 {
-    document.getElementById("NewParameter").hidden = false;
-    document.getElementById("AddButton").hidden = "hidden";
-    document.getElementById("DownloadButton").hidden = "hidden";
+    var current_type = document.getElementById("NewType").value;
+    if (current_type == "2")
+    {
+        document.getElementById("NewValue").setAttribute("type", "text");
+        document.getElementById("NewValue").value = "Add value";
+        return;
+    }
+    if (current_type == "0") {
+        document.getElementById("NewValue").setAttribute("type", "number");
+        document.getElementById("NewValue").value = 0;
+        return;
+    }
+    else
+    {
+        document.getElementById("NewValue").setAttribute("type", "checkbox");
+        document.getElementById("NewValue").value = "";
+    }
 }
 
 function getTypeFromCombobox()
@@ -125,24 +178,7 @@ function getTypeFromCombobox()
             return "String";
     }
 }
-function getFormValue(type, value)
-{
-    var string_to_return = "; Type: ".bold() + type + "; Value: ".bold();
-    switch (type)
-    {
-        case 'Int32':
-            return string_to_return + "<input oninput=\'setElementValue(this, this.parentNode, true)\' type=\'text\' value=" + value + " />";
-        case 'Boolean':
-            var checkbox = "";
-            if (value === "True" )
-                checkbox = "checked";
-            return string_to_return + "<input oninput=\'setElementValue(this, this.parentNode, false)\' type=\'checkbox\'" + checkbox + "/>";
-		case 'String':
-            if (value === "")
-                return string_to_return + "<input oninput=\'setElementValue(this, this.parentNode, false)\' type=\'text\' />";
-            return string_to_return + "<input oninput=\'setElementValue(this, this.parentNode, false)\' type=\'text\' value=\'" + value + "\' />";
-    }
-}
+
 function getNewValue( type ) {
     switch (type) {
         case "String":
@@ -164,69 +200,35 @@ function getNewValue( type ) {
     }
 }
 
-function changeType()
-{
-    var current_type = document.getElementById("NewType").value;
-    if (current_type == "0")
-    {
-        document.getElementById("NewValue").setAttribute("type", "number");
-        document.getElementById("NewValue").value = 0;
-        return;
-    }
-    if (current_type == "1") 
-    {
-        document.getElementById("NewValue").setAttribute("type", "checkbox");
-        document.getElementById("NewValue").value = "";
-    }
-    else
-    {
-        document.getElementById("NewValue").setAttribute("type", "text");
-        document.getElementById("NewValue").value = "Add value";
-        return;
-    }
-}
-function saveParam()
-{	
-	var form = document.getElementById("NewParameter")
-    var element = new Object();
-    element.id = document.getElementById("NewId").value;
-    element.name = document.getElementById("NewName").value;
-    element.description = document.getElementById("NewDescription").value;
-    element.type = getTypeFromCombobox();
-    element.value = getNewValue(element.type);
-    if (checkData(element))
-    return;
-    printParam(element);
-    cancelParam();
-}
-
-function generateOutputXML()
+function generateOutputFile()
 {
     var content = document.getElementById("Content").getElementsByTagName("p");
-    var xmlString = "<?xml version=\"1.0\"?>\n";
-    xmlString += "<Parameters>\n";
-	for (var i = 0; i < content.length; i++)
+    var xmlStr = "<?xml version=\"1.0\"?>\n";
+    xmlStr += "<Parameters>\n";
+    for (var i = 0; i < content.length; i++)
     {
         type = content[i].getAttribute("type");
-        xmlString += "<Parameter>\n";
-        xmlString += "<Id>" + content[i].getAttribute("id") + "</Id>\n";
-        xmlString += "<Name>" + content[i].getAttribute("name") + "</Name>\n";
-        xmlString += "<Description>" + content[i].getAttribute("description") + "</Description>\n";
-        xmlString += "<Type>System." + type;
-        xmlString += "</Type>\n";
-        xmlString += "<Value>" + content[i].getAttribute("value") + "</Value>\n";
-        xmlString += "</Parameter>";
+        xmlStr += "<Parameter>\n";
+        xmlStr += "<Id>" + content[i].getAttribute("id") + "</Id>\n";
+        xmlStr += "<Name>" + content[i].getAttribute("name") + "</Name>\n";
+        xmlStr += "<Description>" + content[i].getAttribute("description") + "</Description>\n";
+        xmlStr += "<Type>System." + type;
+        xmlStr += "</Type>\n";
+        xmlStr += "<Value>" + content[i].getAttribute("value") + "</Value>\n";
+        xmlStr += "</Parameter>";
     }
-    xmlString += "</Parameters>";
-    return xmlString;
+    xmlStr += "</Parameters>";
+    return xmlStr;
 }
 
 function downloadThis(fileName, type)
 {
-    var content = generateOutputXML();
-    var outputFile = new Blob([content], { type: type });
+
+    var text = generateOutputFile();
+    var file = new Blob([text], { type: type });
     var linkToFile = document.getElementById("linkToFile");
-    linkToFile.href = URL.createObjectURL(outputFile);
+    linkToFile.href = URL.createObjectURL(file);
     linkToFile.download = fileName;
     document.getElementById('linkToFile').click();
 }
+
