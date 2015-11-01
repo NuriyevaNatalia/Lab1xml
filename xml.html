@@ -16,7 +16,6 @@
         <div id="Content"></div>
         <ul>
 		<p>
-				<!--<input id="AddButton" type="link" value=" Add parameter " onclick="addParam()">-->
 				<li class="menu"><a id="AddButton" onclick="addParam()">Add</a></li>
 				<li class="menu"><a id="DownloadButton" onclick="downloadThis('output.xml', 'xml/plain')">Download Output.xml</a></li>
 				<a href="" class="hidden" id="linkToFile" hidden = "hidden"></a>
@@ -34,6 +33,7 @@
 					</p>
 					<p>Value: <input id="NewValue" type="text"></p>
 					<li class="menu"><a id="SaveButton" onclick="saveParam()">Save</a></li>
+					<li class="menu"><a id="CancelButton" onclick="cancelParam()">Cancel</a></li>
 			</form>
 		</ul>
     </div>

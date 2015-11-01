@@ -220,3 +220,13 @@ function generateOutputXML()
     xmlString += "</Parameters>";
     return xmlString;
 }
+
+function downloadThis(fileName, type)
+{
+    var content = generateOutputXML();
+    var outputFile = new Blob([content], { type: type });
+    var linkToFile = document.getElementById("linkToFile");
+    linkToFile.href = URL.createObjectURL(outputFile);
+    linkToFile.download = fileName;
+    document.getElementById('linkToFile').click();
+}
