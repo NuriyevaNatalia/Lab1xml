@@ -199,3 +199,24 @@ function saveParam()
     printParam(element);
     cancelParam();
 }
+
+function generateOutputXML()
+{
+    var content = document.getElementById("Content").getElementsByTagName("p");
+    var xmlString = "<?xml version=\"1.0\"?>\n";
+    xmlString += "<Parameters>\n";
+	for (var i = 0; i < content.length; i++)
+    {
+        type = content[i].getAttribute("type");
+        xmlString += "<Parameter>\n";
+        xmlString += "<Id>" + content[i].getAttribute("id") + "</Id>\n";
+        xmlString += "<Name>" + content[i].getAttribute("name") + "</Name>\n";
+        xmlString += "<Description>" + content[i].getAttribute("description") + "</Description>\n";
+        xmlString += "<Type>System." + type;
+        xmlString += "</Type>\n";
+        xmlString += "<Value>" + content[i].getAttribute("value") + "</Value>\n";
+        xmlString += "</Parameter>";
+    }
+    xmlString += "</Parameters>";
+    return xmlString;
+}
