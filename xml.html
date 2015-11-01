@@ -1,0 +1,40 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <script type="text/javascript" src="xmlPars.js"></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+    <title></title>
+</head>
+<body>
+	<ul>
+		<li class="menu"><a href="task.html">Task</a></li>
+		<li class="menu"><a href="xml.html">xmlParser</a></li>
+	</ul>
+	<div>
+        <div id="Content"></div>
+        <ul>
+		<p>
+				<!--<input id="AddButton" type="link" value=" Add parameter " onclick="addParam()">-->
+				<li class="menu"><a id="AddButton" onclick="addParam()">Add</a></li>
+				<li class="menu"><a id="DownloadButton" onclick="downloadThis('output.xml', 'xml/plain')">Download Output.xml</a></li>
+				<a href="" class="hidden" id="linkToFile" hidden = "hidden"></a>
+			</p>
+			<form id="NewParameter" hidden = "hidden">
+					<p>ID: <input id="NewId" type="text" value="Add id"></p>
+					<p>Name: <input id="NewName" type="text" value="Add name"></p>
+					<p>Description: <input id="NewDescription" type="text" value="Add description"></p>
+					<p>Type:
+						<select id="NewType" name="ComboBox" onchange="changeType()">
+							<option value="0">Int32</option>
+							<option value="1">Boolean</option>
+							<option value="2">String</option>
+						</select>
+					</p>
+					<p>Value: <input id="NewValue" type="text"></p>	
+			</form>
+		</ul>
+    </div>
+</body>
+</html>

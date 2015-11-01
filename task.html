@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="windows-1251" />
+    <link rel="stylesheet" type="text/css" href="task.css">
+	<link rel="stylesheet" type="text/css" href="style.css">
+    <title></title>
+</head>
+<body>
+	<ul>
+    <li class="menu"><a href="task.html">Task</a></li>
+    <li class="menu"><a href="xml.html">xmlParser</a></li>
+  </ul>
+    <div>
+		<ol> 
+			<li>Task ‘Parameter control’
+				Implement web control called ‘Parameter’ that will display
+				<ul class="marker">
+					<li>parameter name</li>
+					<li>parameter description</li>
+					<li>parameter edit field</li>
+					<li>parameter value in this edit field</li>
+				</ul>
+				Requirements:
+				Control should get parameter type and display different edit fields for different types 
+				<ul class="marker">
+					<li>For Boolean type display checkbox</li>
+					<li>For String type display textbox</li>
+					<li>For Integer type display textbox that allows only integers to be entered</li>
+				</ul>
+				<p>There should be ability to add control to the page DYNAMICALLY.</p>
+				<p>Create some ‘Settings page’ which will display settings for some site (using this ’Parameter’ control). 
+				Read information from input.xml file. It contains parameter fields (name, description, parameter value and type - Int32, String, Boolean). You must display parameters with editable value on the setting page with appropriate Parameter controls count and save changed data to Output.xml.</p>
+				<li>Захостить на Azure  </li>
+				<li>Вылить на gitlab и отражать там прогресс своей деятельности в виде коммитов.</li>
+		</ol>		
+  
+    </div>
+</body>
+</html>

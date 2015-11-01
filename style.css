@@ -1,0 +1,84 @@
+	li.menu {
+		display: inline-block; /* Строчно-блочные элементы */
+		background: #202020; /* Цвет фона */
+		font-size: 20px;
+    }
+	
+	a {
+		color: #fff; /* Цвет ссылок */
+		display: block; /* Блочный элемент */
+		padding: 5px 15px; /* Поля вокруг текста */
+		text-decoration: none; /* Убираем подчёркивание */
+    }
+	
+	li.menu:hover {
+		background: #FF9E73; /* Цвет фона при наведении курсора мыши */
+	}
+	
+	html, body {
+		background:grey;
+	}
+	
+	div {
+		background: #659DA4;
+		padding: 10px;
+		margin: auto auto; /* Выравниваем слой по центру */
+		opacity: 0.9; /* Значение прозрачности */
+		width: 90%;
+	}
+	
+	ul.marker {
+		list-style: square outside;                             
+    }  
+	
+	ol {
+		list-style-type: decimal;
+    }
+	
+	input#text{
+	
+	}
+	
+	#NewId{
+	
+	}
+	#NewName{
+	
+	}
+	#NewDescription{
+	
+	}
+	#NewType{
+	
+	}
+	#NewValue{
+	
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
