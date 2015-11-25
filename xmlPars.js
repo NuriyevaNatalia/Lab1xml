@@ -3,7 +3,7 @@ var xmlFile;
 window.onload = function ()
 {
     document.getElementById("NewType").value = 0;
-    document.getElementById("NewValue").value = "Add value";
+    document.getElementById("NewValue").value = "0";
     var xmlhttp = new XMLHttpRequest();
     xmlhttp.open("GET", "Input.xml", false);
     xmlhttp.send();
@@ -14,7 +14,7 @@ window.onload = function ()
     }
 }
 
-function printParam(element)
+function printParam( element )
 {
     var html_element = document.createElement("p");
     html_element.setAttribute("class", "Parameter");
@@ -30,7 +30,7 @@ function printParam(element)
                             + "; Description: ".bold() + element.description + form_type + "</br>";
     html_element.innerHTML = string_to_show;
 }
-function getFormValue(type, value)
+function getFormValue( type, value )
 {
     var string_to_return = "; Type: ".bold() + type + "; Value: ".bold();
     switch (type)
@@ -40,7 +40,8 @@ function getFormValue(type, value)
                 return string_to_return + "<input oninput=\'setElementValue(this, this.parentNode, false)\' type=\'text\' />";
             return string_to_return + "<input oninput=\'setElementValue(this, this.parentNode, false)\' type=\'text\' value=\'" + value + "\' />";
         case 'Int32':
-            return string_to_return + "<input oninput=\'setElementValue(this, this.parentNode, true)\' type=\'text\' value=" + value + " />";
+            return string_to_return + 
+			"<input onkeyup=\'checkData(element.value)\' oninput=\'setElementValue(this, this.parentNode, true)\' type=\'text\' value=" + value + " />";
         case 'Boolean':
             var checkbox = "";
             if (value === "True" )
@@ -48,7 +49,8 @@ function getFormValue(type, value)
             return string_to_return + "<input oninput=\'setElementValue(this, this.parentNode, false)\' type=\'checkbox\'" + checkbox + "/>";
     }
 }
-function xmlParser(xml_doc)
+
+function xmlParser( xml_doc )
 {
     var params = xml_doc.getElementsByTagName("Parameter");
     for (var i = 0; i < params.length; i++)
@@ -90,11 +92,25 @@ function setElementValue(child_node, parent_node, isNumber)
     {
         if( isNumber == true)
         {
-            if (!(/-?[1-9][0-9]*$/.test(child_node.value)))
-            {
-                child_node.value = "";
+            if (!(/(^([+-]?)([1-9]+?)[0-9]*$)|^0$/.test(child_node.value))) {
+                if (!(child_node.value == "") && !(child_node.value == "-") && !(child_node.value == "0"))
+                    child_node.value = parent_node.getAttribute('value');
             }
-
+            else
+            {
+                if ((/\d+-\d/).test(child_node.value))
+                {
+                    child_node.value = parent_node.getAttribute('value');
+                }
+                if ((/--/).test(child_node.value))
+                  {
+                    child_node.value = child_node.value.replace("--", "-");
+                  }
+            }
+			var max = 2147483647;
+			var min = -2147483648;
+			if (child_node.value > max) child_node.value = parent_node.getAttribute('value');
+			if (child_node.value < min) child_node.value = parent_node.getAttribute('value');
         }
         parent_node.setAttribute('value', child_node.value);
     }
@@ -135,12 +151,19 @@ function checkData(element)
         result = true;
     }
     if (element.name == "Int32")
-    {
-        if (!(/-?[1-9][0-9]*$/.test(element.value)))
-        {
-            document.getElementById("NewDescription").value = "";
+    {	
+		if (/^0/.test(element.value))
+		{ 	
+			document.getElementById("NewDescription").value = "0";
             result = true;
-        }
+		} 
+		else
+			if (!(/(^([+-]?)([1-9]+?)[0-9]*$)|^0$/.test(element.value)))
+			{
+				if (!child_node.value == "")
+					child_node.value = parent_node.getAttribute('value');
+				result = true;
+			}
     }
     return result;
 }
@@ -150,12 +173,12 @@ function changeType()
     if (current_type == "2")
     {
         document.getElementById("NewValue").setAttribute("type", "text");
-        document.getElementById("NewValue").value = "Add value";
+        document.getElementById("NewValue").value = "Add string";
         return;
     }
     if (current_type == "0") {
         document.getElementById("NewValue").setAttribute("type", "number");
-        document.getElementById("NewValue").value = 0;
+        document.getElementById("NewValue").value = "0";
         return;
     }
     else
@@ -184,7 +207,7 @@ function getNewValue( type ) {
         case "String":
         case "Int32":
         {
-            return document.getElementById("NewValue").value;
+			return document.getElementById("NewValue").value;
         }
         case "Boolean":
         {
